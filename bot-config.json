@@ -1,0 +1,48 @@
+{
+  "developerAbbreviation": "ZC",
+  "protocolName": "ZetaChain",
+  "protocolAbbreviation": "ZETA",
+  "gatherMode": "any",
+  "bots": [
+    {
+      "botType": "monitor-events",
+      "name": "ZetaToken_nonEth",
+      "contracts": {
+        "Zeta.non-eth": {
+          "address": "0x000080383847bd75f91c168269aa74004877592f",
+          "abiFile": "Zeta.non-eth.json",
+          "events": {
+            "Transfer": {
+              "expression": "value > 3000000000000000000",
+              "type": "Info",
+              "severity": "Info"
+            },
+            "Transfer": {
+                "expression": "from === 0xaF811E558350019efb30dE1989c1a45Cc4f58009",
+                "type": "Suspicious",
+                "severity": "High"
+              }
+          }
+        }
+      }
+    },
+    {
+      "botType": "monitor-events",
+      "name": "ZetaToken_nonEth",
+      "contracts": {
+        "Zeta.non-eth": {
+          "address": "0x000080383847bd75f91c168269aa74004877592f",
+          "abiFile": "Zeta.non-eth.json",
+          "events": {
+            "Transfer": {
+              "expression": "value > 3000000000000000000",
+              "type": "Info",
+              "severity": "Info"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+

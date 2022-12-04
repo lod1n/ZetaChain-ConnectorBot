@@ -39,6 +39,7 @@ This agent monitors potentially malicious use of the ZetaChain ERC20 token and C
 ## Test Data
 
 The agent behaviour can be verified with the following test transactions:
+`npm run tx <tx>`
 
 [connector]
 
@@ -46,4 +47,4 @@ The agent behaviour can be verified with the following test transactions:
 
 [token]
 
-- 0x3a0f757030beec55c22cbc545dd8a844cbbb2e6019461769e1bc3f3a95d10826 (15,000 USDT)
+- 0xc93804b3a7b0865ac252f605e45ad777f26b4a82a8afa82ac904fcbac9fb92f6 (large transfer)
