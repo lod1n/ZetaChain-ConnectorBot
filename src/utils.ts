@@ -1,6 +1,5 @@
-const BigNumber = require('bignumber.js');
-const RollingMath = require('rolling-math');
-const { ethers } = require('forta-agent');
+import { Finding, FindingSeverity, FindingType, Network, getEthersProvider } from "forta-agent";
+import { ethers } from "forta-agent";
 
 function buildAbiPath(botName, abiFile) {
   return `../abi/${botName}/${abiFile}`;
@@ -289,7 +288,33 @@ function isEmptyObject(obj) {
 function isFilledString(str) {
   return typeof str === 'string' && str !== '';
 }
+// ===========
+export interface EventObject {
+  name: string; 
+  //description: string;
+  //alertId: string;
+  chainId: Network;
+  type: FindingType;
+  severity: FindingSeverity;
+  signature: string;
+  //protocol: string;
+  expression: string;
+  expressionObject: string;
+}
 
+export interface FindingParams {
+  eventName: string,
+  contractName: string,
+  contractAddress: string,
+  expression: string,
+  eventType: FindingType,
+  eventSeverity: FindingSeverity,
+  args: string,
+  protocolName: string, //remove?
+  addresses: string[],
+}
+
+// ===========
 module.exports = {
   buildAbiPath,
   getAbi,
