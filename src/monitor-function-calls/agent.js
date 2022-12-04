@@ -52,105 +52,6 @@ function createAlert(
   return Finding.fromObject(finding);
 }
 
-const validateConfig = (config, abiOverride = null) => {
-  let ok = false;
-  let errMsg = '';
-
-  if (!isFilledString(config.developerAbbreviation)) {
-    errMsg = 'developerAbbreviation required';
-    return { ok, errMsg };
-  }
-  if (!isFilledString(config.protocolName)) {
-    errMsg = 'protocolName required';
-    return { ok, errMsg };
-  }
-  if (!isFilledString(config.protocolAbbreviation)) {
-    errMsg = 'protocolAbbreviation required';
-    return { ok, errMsg };
-  }
-
-  const { contracts } = config;
-  if (!isObject(contracts) || isEmptyObject(contracts)) {
-    errMsg = 'contracts key required';
-    return { ok, errMsg };
-  }
-
-  const values = Object.values(contracts);
-  for (let i = 0; i < values.length; i += 1) {
-    const { address, abiFile, functions } = values[i];
-
-    // check that the address is a valid address
-    if (!isAddress(address)) {
-      errMsg = 'invalid address';
-      return { ok, errMsg };
-    }
-
-    // load the ABI from the specified file
-    // the call to getAbi will fail if the file does not exist
-    let abi;
-    if (abiOverride != null) {
-      abi = abiOverride[abiFile];
-    } else {
-      try {
-        abi = getAbi(config.name, abiFile);
-      } catch (error) {
-        console.error(error);
-        const path = buildAbiPath(config.name, abiFile);
-        errMsg = `Unable to get abi file! ${path}`;
-        return { ok, errMsg };
-      }
-    }
-
-    // get all of the function objects from the loaded ABI file
-    const functionObjects = getObjectsFromAbi(abi, 'function');
-
-    // for all of the functions specified, verify that they exist in the ABI
-    let functionName;
-    const functionNames = Object.keys(functions);
-    for (let j = 0; j < functionNames.length; j += 1) {
-      functionName = functionNames[j];
-      if (Object.keys(functionObjects).indexOf(functionName) === -1) {
-        errMsg = 'invalid function';
-        return { ok, errMsg };
-      }
-
-      // extract the keys from the configuration file for a specific function
-      const { expression, type, severity } = functions[functionName];
-
-      // the expression key can be left out, but if it's present, verify the expression
-      if (expression !== undefined) {
-        // if the expression is not valid, the call to parseExpression will fail
-        const expressionObject = parseExpression(expression);
-
-        // check the function definition to verify the argument name
-        const { inputs } = functionObjects[functionName];
-        const argumentNames = inputs.map((inputEntry) => inputEntry.name);
-
-        // verify that the argument name is present in the function Object
-        if (argumentNames.indexOf(expressionObject.variableName) === -1) {
-          errMsg = 'invalid argument';
-          return { ok, errMsg };
-        }
-      }
-
-      // check type, this will fail if 'type' is not valid
-      if (!Object.prototype.hasOwnProperty.call(FindingType, type)) {
-        errMsg = 'invalid finding type!';
-        return { ok, errMsg };
-      }
-
-      // check severity, this will fail if 'severity' is not valid
-      if (!Object.prototype.hasOwnProperty.call(FindingSeverity, severity)) {
-        errMsg = 'invalid finding severity!';
-        return { ok, errMsg };
-      }
-    }
-  }
-
-  ok = true;
-  return { ok, errMsg };
-};
-
 const initialize = async (config, abiOverride = null) => {
   const botState = { ...config };
 
@@ -258,7 +159,6 @@ const handleTransaction = async (botState, txEvent) => {
 };
 
 module.exports = {
-  validateConfig,
   initialize,
   handleTransaction,
 };

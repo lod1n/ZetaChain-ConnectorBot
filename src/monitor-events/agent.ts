@@ -1,5 +1,5 @@
 import { Finding, FindingSeverity, FindingType, ethers } from "forta-agent";
-import { EventObject, FindingParams } from "../utils";
+import { EventObject, FindingParams, extractEventArgs, getAbi, parseExpression, checkLogAgainstExpression } from "../utils";
 
 // build the event object so we can pattern match against the expression.
 function getEvents(contractEventConfig, currentContract) {

@@ -1,8 +1,8 @@
 /* eslint-disable global-require */
 const botImports = [
   { name: 'monitor-events', bot: require('./monitor-events/agent') },
-  { name: 'monitor-function-calls', bot: require('./monitor-function-calls/agent') },
-  { name: 'transaction-failure-count', bot: require('./transaction-failure-count/agent') },
+  //{ name: 'monitor-function-calls', bot: require('./monitor-function-calls/agent') },
+  //{ name: 'transaction-failure-count', bot: require('./transaction-failure-count/agent') },
 ];
 /* eslint-enable global-require */
 
