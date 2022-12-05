@@ -17,18 +17,19 @@
               "type": "Info",
               "severity": "Info"
             },
+
             "Transfer": {
-                "expression": "from === 0xaF811E558350019efb30dE1989c1a45Cc4f58009",
-                "type": "Suspicious",
-                "severity": "High"
-              }
+              "expression": "from == 0xe80b6467863ebf8865092544f441da8fd3cf6074",
+              "type": "Suspicious",
+              "severity": "High"
+            }
           }
         }
       }
     },
     {
       "botType": "monitor-events",
-      "name": "ZetaToken_nonEth",
+      "name": "TODO",
       "contracts": {
         "Zeta.non-eth": {
           "address": "0x000080383847bd75f91c168269aa74004877592f",
