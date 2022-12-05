@@ -1,11 +1,9 @@
 {
-  "developerAbbreviation": "ZC",
   "protocolName": "ZetaChain",
-  "protocolAbbreviation": "ZETA",
   "gatherMode": "any",
   "bots": [
     {
-      "botType": "monitor-events",
+      "botType": "event-watcher",
       "name": "ZetaToken_nonEth",
       "contracts": {
         "Zeta.non-eth": {
@@ -13,21 +11,16 @@
           "abiFile": "Zeta.non-eth.json",
           "events": {
             "Transfer": {
-              "expression": "value > 3000000000000000000",
-              "type": "Info",
-              "severity": "Info"
-            },
-            "Transfer": {
-                "expression": "from === 0xaF811E558350019efb30dE1989c1a45Cc4f58009",
+                "expression": "from === 0xE80B6467863EbF8865092544f441da8fD3cF6074",
                 "type": "Suspicious",
                 "severity": "High"
               }
           }
         }
       }
-    },
+    }, 
     {
-      "botType": "monitor-events",
+      "botType": "event-watcher",
       "name": "ZetaToken_nonEth",
       "contracts": {
         "Zeta.non-eth": {
@@ -35,7 +28,24 @@
           "abiFile": "Zeta.non-eth.json",
           "events": {
             "Transfer": {
-              "expression": "value > 3000000000000000000",
+              "expression": "value >= 3000000000000000000",
+              "type": "Info",
+              "severity": "Info"
+            }
+          }
+        }
+      }
+    },
+    {
+      "botType": "event-watcher",
+      "name": "ZetaToken_Eth",
+      "contracts": {
+        "Zeta.eth": {
+          "address": "0xCc7bb2D219A0FC08033E130629C2B854b7bA9195",
+          "abiFile": "Zeta.eth.json",
+          "events": {
+            "Transfer": {
+              "expression": "value >= 2000000000000000000", 
               "type": "Info",
               "severity": "Info"
             }

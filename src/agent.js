@@ -1,8 +1,8 @@
 /* eslint-disable global-require */
 const botImports = [
-  { name: 'monitor-events', bot: require('./monitor-events/agent') },
-  { name: 'monitor-function-calls', bot: require('./monitor-function-calls/agent') },
-  { name: 'transaction-failure-count', bot: require('./transaction-failure-count/agent') },
+  { name: 'event-watcher', bot: require('./event-watcher/agent') },
+  //{ name: 'function-watcher', bot: require('./function-watcher/agent') },
+  //{ name: 'tx-failure-watcher', bot: require('./tx-failure-watcher/agent') },
 ];
 /* eslint-enable global-require */
 
@@ -31,8 +31,6 @@ async function generateAllBots(_config, _botMap) {
   const botConfigs = [];
   for (let i = 0; i < _config.bots.length; i += 1) {
     const bot = { ..._config.bots[i] };
-    bot.developerAbbreviation = _config.developerAbbreviation;
-    bot.protocolAbbreviation = _config.protocolAbbreviation;
     bot.protocolName = _config.protocolName;
     botConfigs.push(bot);
   }
