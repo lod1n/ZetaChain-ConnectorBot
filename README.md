@@ -13,28 +13,29 @@ This agent monitors potentially malicious use of the ZetaChain ERC20 token and C
 
 ## Alerts
 
-- CONNECTOR-1
+- CONNECTOR-BLACKLIST
 
-  - Fired when a transaction is detected originating from a blacklisted address
+  - Fired when any event transaction is detected when originating from 5or being sent to a blacklisted address
   - Due to the malicious nature of blacklisted addresses:
     - Severity is always set to "high"
     - Type is always set to "suspicious"
-  - Currently the blacklist is hardcoded for each chain within `network.ts`
 
 - CONNECTOR-2
 
   - XXXX
 
-- TOKEN-1
+- TOKEN-BLACKLIST
 
   - Fired when a transaction is detected originating from a blacklisted address
   - Due to the malicious nature of blacklisted addresses:
     - Severity is always set to "high"
     - Type is always set to "suspicious"
-  - Currently the blacklist is hardcoded for each chain within `network.ts`
 
-- TOKEN-2
-  - XXXX
+- TOKEN-LARGETRANSFER
+  - Fired when a transfer transaction is detected exceeding the value set in `bot-config.json`
+  - The criticality used below can be modified once a reasonable threshold value is agreed.
+    - Severity is always set to "info"
+    - Type is always set to "info"
 
 ## Test Data
 
@@ -43,7 +44,7 @@ The agent behaviour can be verified with the following test transactions:
 
 [connector]
 
-- 0x3a0f757030beec55c22cbc545dd8a844cbbb2e6019461769e1bc3f3a95d10826 (15,000 USDT)
+- xxxx
 
 [token]
 
