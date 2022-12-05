@@ -52,6 +52,38 @@
           }
         }
       }
+    },
+    {
+      "botType": "event-watcher",
+      "name": "ZetaConnector_nonEth",
+      "contracts": {
+        "ZetaConnector.nonEth": {
+          "address": "0x000054d3A0Bc83Ec7808F52fCdC28A96c89F6C5c",
+          "abiFile": "ZetaConnector.nonEth.json",
+          "events": {
+            "TSSAddressUpdated": {
+              "type": "Suspicious",
+              "severity": "High"
+            }
+          }
+        }
+      }
+    },
+    {
+      "botType": "event-watcher",
+      "name": "ZetaConnector_Eth",
+      "contracts": {
+        "ZetaConnector.eth": {
+          "address": "0x00007d0BA516a2bA02D77907d3a1348C1187Ae62",
+          "abiFile": "ZetaConnector.eth.json",
+          "events": {
+            "PauserAddressUpdated": {
+              "type": "Suspicious",
+              "severity": "High"
+            }
+          }
+        }
+      }
     }
   ]
 }
