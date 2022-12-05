@@ -13,17 +13,6 @@ function getAbi(botName, abiFile) {
   return abi;
 }
 
-function buildInternalAbiPath(botType, abiFile) {
-  return `./${botType}/internal-abi/${abiFile}`;
-}
-
-function getInternalAbi(botType, abiFile) {
-  const abiPath = buildInternalAbiPath(botType, abiFile);
-  // eslint-disable-next-line global-require,import/no-dynamic-require
-  const { abi } = require(abiPath);
-  return abi;
-}
-
 // helper function that identifies key strings in the args array obtained from log parsing
 // these key-value pairs will be added to the metadata as event args
 // all values are converted to strings so that BigNumbers are readable
@@ -169,146 +158,11 @@ function checkLogAgainstExpression(expressionObject, log) {
   return comparisonFunction(argValue, operator, operand);
 }
 
-// get a list of variable getter information objects for each variable name listed for a given
-// contract in the config
-function getVariableInfo(contractConfig, currentContract) {
-  const { variables } = contractConfig;
-  const info = [];
 
-  const variableNames = Object.keys(variables);
-
-  variableNames.forEach((variableName) => {
-    const variableInfo = variables[variableName];
-
-    // make sure either upper threshold percent or lower threshold percent for a given variable
-    // is defined in the config
-    if (variableInfo.upperThresholdPercent === undefined
-      && variableInfo.lowerThresholdPercent === undefined) {
-      throw new Error('Either the upperThresholdPercent or lowerThresholdPercent for the'
-        + ` variable ${variableName} must be defined`);
-    }
-
-    const getterObject = {
-      name: variableName,
-      type: variables[variableName].type,
-      severity: variables[variableName].severity,
-      contractInfo: currentContract,
-    };
-
-    if (variableInfo.upperThresholdPercent !== undefined) {
-      getterObject.upperThresholdPercent = variableInfo.upperThresholdPercent;
-    }
-    if (variableInfo.lowerThresholdPercent !== undefined) {
-      getterObject.lowerThresholdPercent = variableInfo.lowerThresholdPercent;
-    }
-
-    // create the rolling math array, if numDataPoints is present in the config use its
-    // corresponding value for array size, otherwise set the array size to 1
-    const arraySize = variableInfo.numDataPoints ? variableInfo.numDataPoints : 1;
-    getterObject.pastValues = new RollingMath(arraySize);
-    getterObject.minNumElements = arraySize;
-
-    info.push(getterObject);
-  });
-
-  return { info };
-}
-
-function checkThreshold(thresholdPercent, currValue, pastValues) {
-  const thresholdPercentBN = new BigNumber(thresholdPercent);
-  const averageBN = pastValues.getAverage();
-  const differenceBN = currValue.minus(averageBN).abs();
-  const differencePercentBN = differenceBN.div(averageBN).times(100);
-  let percentOver;
-
-  if (differencePercentBN.gt(thresholdPercentBN)) {
-    percentOver = differencePercentBN;
-  }
-
-  return percentOver;
-}
-
-// helper function that identifies key strings in the args array obtained from transaction parsing
-// these key-value pairs will be added to the metadata as function args
-// all values are converted to strings so that BigNumbers are readable
-function extractFunctionArgs(args) {
-  const functionArgs = {};
-  Object.keys(args).forEach((key) => {
-    if (Number.isNaN(Number(key))) {
-      functionArgs[key] = args[key].toString();
-    }
-  });
-  return functionArgs;
-}
-
-// create a fake function name
-function getRandomCharacterString(numCharacters) {
-  let result = '';
-  let charCode;
-  for (let i = 0; i < numCharacters; i += 1) {
-    charCode = Math.floor(Math.random() * 52);
-    if (charCode < 26) {
-      charCode += 65;
-    } else {
-      charCode += 97 - 26;
-    }
-    result += String.fromCharCode(charCode);
-  }
-  return result;
-}
-
-function createProposalFromLog(log) {
-  const proposalId = log.args.proposalId.toString();
-  const proposal = {
-    proposalId,
-    proposer: log.args.proposer,
-    targets: log.args.targets.join(','),
-    // the 'values' key has to be parsed differently because `values` is a named method on Objects
-    // in JavaScript.  Also, this is why the key is prefixed with an underscore, to avoid
-    // overwriting the `values` method.
-    _values: (log.args[3].map((v) => v.toString())).join(','),
-    signatures: log.args.signatures.join(','),
-    calldatas: log.args.calldatas.join(','),
-    startBlock: log.args.startBlock.toString(),
-    endBlock: log.args.endBlock.toString(),
-    description: log.args.description,
-  };
-  return proposal;
-}
-
-// This looks goofy,
-// but *should* return false for obj == undefined/null
-function isObject(obj) {
-  return obj === Object(obj);
-}
-
-function isEmptyObject(obj) {
-  return Object.keys(obj).length === 0;
-}
-
-function isFilledString(str) {
-  return typeof str === 'string' && str !== '';
-}
 
 module.exports = {
-  buildAbiPath,
   getAbi,
-  buildInternalAbiPath,
-  getInternalAbi,
-  extractFunctionArgs,
-  getVariableInfo,
-  checkThreshold,
-  createProposalFromLog,
   extractEventArgs,
-  isNumeric,
-  isAddress,
-  isObject,
-  isEmptyObject,
-  isFilledString,
-  addressComparison,
-  booleanComparison,
-  bigNumberComparison,
   parseExpression,
   checkLogAgainstExpression,
-  getRandomCharacterString,
 };

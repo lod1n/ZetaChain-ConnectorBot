@@ -18,13 +18,16 @@ Alerts are configured in `bot-config.json`
 - CONNECTOR-PauserAddressUpdated
 
   - Fired when the `PauserAddressUpdated` event is emitted.
-  - Due to the sensetive nature of this function :
+  - Due to the privileged nature of this function an alert is generated to ensure visibility:
     - Severity is always set to "high"
     - Type is always set to "suspicious"
 
 - CONNECTOR-TSSAddressUpdated
 
-  - XXXX
+  - Fired when the `TSSAddressUpdated` event is emitted.
+  - Due to the privileged nature of this function an alert is generated to ensure visibility:
+    - Severity is always set to "high"
+    - Type is always set to "suspicious"
 
 - TOKEN-BLACKLIST
 
