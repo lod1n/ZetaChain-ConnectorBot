@@ -11,9 +11,9 @@ const config = require('../bot-config.json');
 const botStates = {};
 const botMap = new Map();
 
-async function generateAllBots(_config, _botMap) {
+async function generateAllBots(_config: any, _botMap: any) {
   const modProms = [];
-  const modNames = [];
+  const modNames: any = [];
   for (let i = 0; i < botImports.length; i += 1) {
     const imp = botImports[i];
     modProms.push(imp.bot);
@@ -40,7 +40,7 @@ async function generateAllBots(_config, _botMap) {
   return botConfigs;
 }
 
-function initializeBots(_config, _botMap, _botStates) {
+function initializeBots(_config: any, _botMap: any, _botStates: any) {
   return async function initialize() {
     const botConfigs = await generateAllBots(_config, _botMap);
 
@@ -77,8 +77,8 @@ function initializeBots(_config, _botMap, _botStates) {
   };
 }
 
-function handleAllBlocks(_botMap, _botStates) {
-  return async function handleBlock(blockEvent) {
+function handleAllBlocks(_botMap: any, _botStates: any) {
+  return async function handleBlock(blockEvent: any) {
     if (_botStates.blockHandlerCount === 0) {
       return [];
     }
@@ -119,8 +119,8 @@ function handleAllBlocks(_botMap, _botStates) {
   };
 }
 
-function handleAllTransactions(_botMap, _botStates) {
-  return async function handleTransaction(txEvent) {
+function handleAllTransactions(_botMap: any, _botStates: any) {
+  return async function handleTransaction(txEvent: any) {
     // We can't have any findings if we have no handlers!
     if (_botStates.txHandlerCount === 0) {
       return [];

@@ -1,8 +1,8 @@
 import { Finding, FindingSeverity, FindingType, ethers } from "forta-agent";
-import { EventObject, FindingParams, extractEventArgs, getAbi, parseExpression, checkLogAgainstExpression } from "../utils";
+import { EventObject, FindingParams, extractEventArgs, getAbi, parseExpression, checkLogAgainstExpression } from '../utils'
 
 // build the event object so we can pattern match against the expression.
-function getEvents(contractEventConfig, currentContract) {
+function getEvents(contractEventConfig: any, currentContract: any) {
     let { events } = contractEventConfig;
     const eventInfo: EventObject[] = [];
 
@@ -22,7 +22,6 @@ function getEvents(contractEventConfig, currentContract) {
     return { eventInfo };
 };
 
-// TODO define FindingParams for calling variable
 function createFinding({
     eventName,
     contractName,
@@ -45,29 +44,34 @@ function createFinding({
         severity: eventSeverity,
         protocol: protocolName,
         addresses,
-        metadata: {
-            contractName,
-            contractAddress,
-            eventName,
-            ...eventArgs,
-        },
+        //metadata: {
+            //contractName,
+            //contractAddress,
+            //eventName,
+            //...eventArgs,
+        //},
     });
     return Finding.fromObject(finding);
 }
 
-const initialize = async (config) => {
+interface EndPoint {
+    monitorEvents: string;
+    url: string;
+}
+
+const initialize = async (config: any) => {
     const botState = { ...config };
     botState.monitorEvents = config.contracts;
 
     // load interfaces and contract abis
-    botState.contracts = Object.entries(botState.monitorEvents).map(([name, entry]) => {
-        let abi = getAbi(config.name, entry.abiFile);
+
+    botState.contracts = Object.entries(botState.monitorEvents).map(([name, entry]) => {    
+        let abi = getAbi(config.name, (entry as { abiFile: string }).abiFile);
         const iface = new ethers.utils.Interface(abi);
-        const contract = { name, address: entry.address, iface };
-        return contract;
+        const contract = { name, address: (entry as { address: string }).address, iface };        return contract;
     });
 
-    botState.contracts.forEach((contract) => {
+    botState.contracts.forEach((contract: any) => {
         const entry = botState.monitorEvents[contract.name];
         const { eventInfo } = getEvents(entry, contract);
         contract.eventInfo = eventInfo;
@@ -76,17 +80,17 @@ const initialize = async (config) => {
     return botState;
 }
 
-const handleTransaction = async (botState, txEvent) => {
+const handleTransaction = async (botState: any, txEvent: any) => {
     if (!botState.contracts) throw new Error('handleTransaction called before first init');
 
     const findings: Finding[] = [];
-    botState.contracts.forEach((contract) => {
-        contract.eventInfo.forEach((ev) => {
+    botState.contracts.forEach((contract: any) => {
+        contract.eventInfo.forEach((ev: any) => {
             const txLogs = txEvent.filterLog(ev.signature, contract.address);
             
-            txLogs.forEach((txLog) => {
+            txLogs.forEach((txLog: any) => {
                 if (ev.expression) {
-                    if (!checkLogAgainstExpression(ev.expressionObject, parsedLog)) {
+                    if (!checkLogAgainstExpression(ev.expressionObject, txLog)) {
                         return;
                     }
                 }

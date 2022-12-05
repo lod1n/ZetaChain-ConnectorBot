@@ -7,14 +7,14 @@ import { BigNumber } from 'bignumber.js';
 // ===========
 
 // abi's are stored based on the botname to help keep things organised.
-function getAbi(botName: string, abiFile: string) { 
+export function getAbi(botName: string, abiFile: any) { 
   const abiPath = `../abi/${botName}/${abiFile}`;
   const { abi } = require(abiPath);
   return abi;
 };
 
 // parses expressions
-function parseExpression(expression: string) { 
+export function parseExpression(expression: string) { 
   const subStr = expression.split(/(\s+)/).filter((str) => str.trim().length > 0);
 
   if (subStr.length !== 3) {
@@ -84,9 +84,29 @@ export function extractEventArgs(args: Args): string[] {
   return eventArgs;
 };
 
-// TODO: checkLogAgainstExpression()
-function checkLogAgainstExpression(expressionObject: object, log: object) { 
-  console.log("hello");
+export function checkLogAgainstExpression(expressionObject: any, log: any) { 
+  const {
+    variableName: argName, operator, comparisonFunction, value: operand,
+  } = expressionObject;
+
+  if (log.args[argName] === undefined) {
+    // passed-in argument name from config file was not found in the log, which means that the
+    // user's argument name does not coincide with the names of the event ABI
+    const logArgNames = Object.keys(log.args);
+    throw new Error(`Argument name ${argName} does not match any of the arguments found in an ${log.name} log: ${logArgNames}`);
+  }
+
+  // convert the value of argName and the operand value into their corresponding types
+  // we assume that any value prefixed with '0x' is an address as a hex string, otherwise it will
+  // be interpreted as an ethers BigNumber
+  let argValue = log.args[argName];
+
+  // Check if the operand type is BigNumber
+  if (BigNumber.isBigNumber(operand)) {
+    argValue = new BigNumber(argValue.toString());
+  }
+
+  return comparisonFunction(argValue, operator, operand);
 };
 
 // ===========
@@ -166,7 +186,7 @@ export interface FindingParams {
   expression: string,
   eventType: FindingType,
   eventSeverity: FindingSeverity,
-  args: string,
+  args: Args,
   protocolName: string, //remove?
   addresses: string[],
 }
